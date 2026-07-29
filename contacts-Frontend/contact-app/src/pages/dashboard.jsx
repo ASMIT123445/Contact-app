@@ -26,7 +26,23 @@ function Dashboard() {
     }, []);
 
 
-    return <h1>Dashboard pages</h1>
+    return (
+    <><h1>Dashboard pages</h1>
+    
+    {contacts.length=== 0 ? (
+        <p>No contacts found.</p>
+    ) : (
+        <ul>
+            {contacts.map((contact) => (
+                <li key={contact._id}> 
+                {contact.name} - {contact.email} - {contact.phone}
+                </li>
+                ))};
+        </ul>
+    )};
+    </>
+    );
+
 }
 
 export default Dashboard;
