@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import api from "../services/api";
 
 function Dashboard() {
-    const [contacts, setContacts ] = useState([]);
+    const [contacts, setContacts ] = useState({
+        name: "",
+        email: "",
+        phone: "",
+    });
 
     useEffect(() => {
         const fetchContacts = async () => {
