@@ -23,6 +23,22 @@ function Dashboard() {
         });
     };
 
+    const handleDelete = async (id) => {
+        try {
+            const token = localStorage.getItem("token")
+
+            await api.delete(`/contacts/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
+
+            setContacts(contacts.filter((contacts) => contacts._id !== id));
+        } catch (error) {
+            console.log(error.response?.data || error.message);  
+        };
+    };
+
     useEffect(() => {
         const fetchContacts = async () => {
             try {
@@ -70,6 +86,8 @@ function Dashboard() {
                     {contacts.map((contact) => (
                         <li key={contact._id}>
                             {contact.name} - {contact.email} - {contact.phone}
+
+                            <button onClick={() => handleDelete(contacts._id)}>Delete</button>
                         </li>
                     ))}
                 </ul>
