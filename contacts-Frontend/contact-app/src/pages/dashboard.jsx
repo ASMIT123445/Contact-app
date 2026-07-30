@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
     const [contacts, setContacts] = useState([]);
+    const  [editID, setEditID] = useState(null);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -38,6 +39,17 @@ function Dashboard() {
             console.log(error.response?.data || error.message);  
         };
     };
+
+    const handleEdit = (contact) => {
+        setFormData({
+            name:contacts.name,
+            email:contacts.email,
+            phone:contacts.phone,
+        });
+
+        setEditID(contact._id);
+
+    }
 
     useEffect(() => {
         const fetchContacts = async () => {
@@ -87,7 +99,9 @@ function Dashboard() {
                         <li key={contact._id}>
                             {contact.name} - {contact.email} - {contact.phone}
 
-                            <button onClick={() => handleDelete(contacts._id)}>Delete</button>
+                            <button onClick={() => handleEdit(contact._id)}>Edit</button>
+
+                            <button onClick={() => handleDelete(contact)}>Delete</button>
                         </li>
                     ))}
                 </ul>
