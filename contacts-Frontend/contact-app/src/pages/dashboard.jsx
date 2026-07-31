@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
     const [contacts, setContacts] = useState([]);
+    const [message, setMessage] = useState("");
     const  [editId, setEditId] = useState(null);
     const [formData, setFormData] = useState({
         name: "",
@@ -35,6 +36,12 @@ function Dashboard() {
     };
 
     const handleDelete = async (id) => {
+        const confirmDelete = window.confirm(
+            "Are you sure you want to delete the contact?"
+        );
+
+        if (!confirmDelete) return
+
         try {
             const token = localStorage.getItem("token")
 
@@ -71,9 +78,9 @@ function Dashboard() {
                     },
                 });
                 setContacts(response.data);
-                console.log(response.data);
+                setMessage("Contacts added successfully")
             } catch (error) {
-                console.log(error.response?.data || error.message);
+                setMessage(error.response?.data || "Something went wrong");
             }
         };
         fetchContacts();
@@ -142,6 +149,8 @@ function Dashboard() {
                     ))}
                 </ul>
             )}
+
+            {message && <p>{message}</p>}   
 
             <form onSubmit={handleSubmit}>
                 <input
