@@ -87,6 +87,12 @@ function Dashboard() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!formData.name || !formData.email || !formData.phone) {
+            showMessage("Please enter all the fields");
+        };
+
+        return 
+
         try {
             const token = localStorage.getItem("token");
 
