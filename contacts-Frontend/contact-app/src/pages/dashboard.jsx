@@ -5,13 +5,18 @@ import { useNavigate } from "react-router-dom";
 function Dashboard() {
     const [contacts, setContacts] = useState([]);
     const [message, setMessage] = useState("");
-    const  [editId, setEditId] = useState(null);
+    const [editId, setEditId] = useState(null);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         phone: "",
     });
     const navigate = useNavigate();
+
+    const showMessage = (msg) => {
+        setMessage(msg);
+        setTimeout(() => setMessage(""), 3000);
+    };
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -27,12 +32,7 @@ function Dashboard() {
 
     const handleCancel = () => {
         setEditId(null);
-
-        setFormData({
-            name:"",
-            email:"",
-            phone:"",
-        });
+        setFormData({ name: "", email: "", phone: "" });
     };
 
     const handleDelete = async (id) => {
@@ -40,33 +40,32 @@ function Dashboard() {
             "Are you sure you want to delete the contact?"
         );
 
-        if (!confirmDelete) return
+        if (!confirmDelete) return;
 
         try {
-            const token = localStorage.getItem("token")
+            const token = localStorage.getItem("token");
 
             await api.delete(`/contacts/${id}`, {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
                 },
             });
 
             setContacts(contacts.filter((c) => c._id !== id));
+            showMessage("Contact deleted successfully");
         } catch (error) {
-            console.log(error.response?.data || error.message);  
-        };
+            showMessage(error.response?.data?.message || "Failed to delete contact");
+        }
     };
 
     const handleEdit = (contact) => {
         setFormData({
-            name:contact.name,
-            email:contact.email,
-            phone:contact.phone,
+            name: contact.name,
+            email: contact.email,
+            phone: contact.phone,
         });
-
         setEditId(contact._id);
-
-    }
+    };
 
     useEffect(() => {
         const fetchContacts = async () => {
@@ -78,9 +77,8 @@ function Dashboard() {
                     },
                 });
                 setContacts(response.data);
-                setMessage("Contacts added successfully")
             } catch (error) {
-                setMessage(error.response?.data || "Something went wrong");
+                showMessage(error.response?.data?.message || "Failed to load contacts");
             }
         };
         fetchContacts();
@@ -88,51 +86,50 @@ function Dashboard() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-      
+
         try {
-          const token = localStorage.getItem("token");
-      
-          if (editId) {
-            // Update existing contact
-            const response = await api.put(`/contacts/${editId}`, formData, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }); 
-      
-            setContacts(
-              contacts.map((contact) =>
-                contact._id === editId ? response.data : contact
-              )
-            );
-      
-            setEditId(null);
-          } else {
-            // Create new contact
-            const response = await api.post("/contacts", formData, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
-      
-            setContacts([...contacts, response.data]);
-          }
-      
-          setFormData({
-            name: "",
-            email: "",
-            phone: "",
-          });
+            const token = localStorage.getItem("token");
+
+            if (editId) {
+                // Update existing contact
+                const response = await api.put(`/contacts/${editId}`, formData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                setContacts(
+                    contacts.map((contact) =>
+                        contact._id === editId ? response.data : contact
+                    )
+                );
+                setEditId(null);
+                showMessage("Contact updated successfully");
+            } else {
+                // Create new contact
+                const response = await api.post("/contacts", formData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                setContacts([...contacts, response.data]);
+                showMessage("Contact added successfully");
+            }
+
+            setFormData({ name: "", email: "", phone: "" });
         } catch (error) {
-          console.log(error.response?.data || error.message);
+            showMessage(error.response?.data?.message || "Something went wrong");
         }
-      };
+    };
 
     return (
         <>
             <h1>Dashboard pages</h1>
 
             <button onClick={handleLogout}>Logout</button>
+
+            {message && <p>{message}</p>}
 
             {contacts.length === 0 ? (
                 <p>No contacts found.</p>
@@ -141,16 +138,12 @@ function Dashboard() {
                     {contacts.map((contact) => (
                         <li key={contact._id}>
                             {contact.name} - {contact.email} - {contact.phone}
-
                             <button onClick={() => handleEdit(contact)}>Edit</button>
-
                             <button onClick={() => handleDelete(contact._id)}>Delete</button>
                         </li>
                     ))}
                 </ul>
             )}
-
-            {message && <p>{message}</p>}   
 
             <form onSubmit={handleSubmit}>
                 <input
@@ -175,14 +168,14 @@ function Dashboard() {
                     onChange={handleChange}
                 />
                 <button type="submit">
-                    {editId ? "Update Contact" : "Add Contact"}</button>
-                    {editId && (
-                        <button type="button" onClick={handleCancel}>Cancel</button>
-                    )}
+                    {editId ? "Update Contact" : "Add Contact"}
+                </button>
+                {editId && (
+                    <button type="button" onClick={handleCancel}>Cancel</button>
+                )}
             </form>
         </>
     );
 }
-
 
 export default Dashboard;
