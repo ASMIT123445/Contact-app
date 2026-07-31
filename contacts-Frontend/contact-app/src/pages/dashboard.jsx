@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
     const [contacts, setContacts] = useState([]);
-    const  [editID, setEditID] = useState(null);
+    const  [editId, setEditId] = useState(null);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -34,7 +34,7 @@ function Dashboard() {
                 },
             });
 
-            setContacts(contacts.filter((contacts) => contacts._id !== id));
+            setContacts(contacts.filter((c) => c._id !== id));
         } catch (error) {
             console.log(error.response?.data || error.message);  
         };
@@ -42,12 +42,12 @@ function Dashboard() {
 
     const handleEdit = (contact) => {
         setFormData({
-            name:contacts.name,
-            email:contacts.email,
-            phone:contacts.phone,
+            name:contact.name,
+            email:contact.email,
+            phone:contact.phone,
         });
 
-        setEditID(contact._id);
+        setEditId(contact._id);
 
     }
 
@@ -71,19 +71,45 @@ function Dashboard() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+      
         try {
-            const token = localStorage.getItem("token");
+          const token = localStorage.getItem("token");
+      
+          if (editId) {
+            // Update existing contact
+            const response = await api.put(`/contacts/${editId}`, formData, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }); 
+      
+            setContacts(
+              contacts.map((contact) =>
+                contact._id === editId ? response.data : contact
+              )
+            );
+      
+            setEditId(null);
+          } else {
+            // Create new contact
             const response = await api.post("/contacts", formData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             });
+      
             setContacts([...contacts, response.data]);
-            setFormData({ name: "", email: "", phone: "" });
+          }
+      
+          setFormData({
+            name: "",
+            email: "",
+            phone: "",
+          });
         } catch (error) {
-            console.log(error.response?.data || error.message);
+          console.log(error.response?.data || error.message);
         }
-    };
+      };
 
     return (
         <>
@@ -99,9 +125,9 @@ function Dashboard() {
                         <li key={contact._id}>
                             {contact.name} - {contact.email} - {contact.phone}
 
-                            <button onClick={() => handleEdit(contact._id)}>Edit</button>
+                            <button onClick={() => handleEdit(contact)}>Edit</button>
 
-                            <button onClick={() => handleDelete(contact)}>Delete</button>
+                            <button onClick={() => handleDelete(contact._id)}>Delete</button>
                         </li>
                     ))}
                 </ul>
@@ -129,7 +155,8 @@ function Dashboard() {
                     value={formData.phone}
                     onChange={handleChange}
                 />
-                <button type="submit">Add contact</button>
+                <button type="submit">
+                    {editId ? "Update Contact" : "Add Contact"}</button>
             </form>
         </>
     );
