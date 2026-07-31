@@ -24,6 +24,16 @@ function Dashboard() {
         });
     };
 
+    const handleCancel = () => {
+        setEditId(null);
+
+        setFormData({
+            name:"",
+            email:"",
+            phone:"",
+        });
+    };
+
     const handleDelete = async (id) => {
         try {
             const token = localStorage.getItem("token")
@@ -157,6 +167,9 @@ function Dashboard() {
                 />
                 <button type="submit">
                     {editId ? "Update Contact" : "Add Contact"}</button>
+                    {editId && (
+                        <button type="button" onClick={handleCancel}>Cancel</button>
+                    )}
             </form>
         </>
     );
