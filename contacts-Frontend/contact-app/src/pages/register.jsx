@@ -13,7 +13,7 @@ function Register() {
                     <br/>
                     <label>Email</label>
                     <br/>
-                    <imput type="email" placeholder="Enter your email"/>
+                    <input type="email" placeholder="Enter your email"/>
                     <br/>
                     <label>Password:</label>
                     <br/>

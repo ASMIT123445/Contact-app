@@ -6,6 +6,7 @@ function Dashboard() {
     const [contacts, setContacts] = useState([]);
     const [message, setMessage] = useState("");
     const [editId, setEditId] = useState(null);
+    const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
         name: "",
@@ -130,22 +131,35 @@ function Dashboard() {
             showMessage(error.response?.data?.message || "Something went wrong");
         }
     };
+    const filtercontacts = contacts.filter((contact) => {
+        return contact.name.toLowerCase().includes(search.toLowerCase())
+    })
 
     return (
         <>
             <h1>Dashboard pages</h1>
 
             <button onClick={handleLogout}>Logout</button>
+            <br />
+
+         
+            <input 
+            type="text"
+            placeholder="Search names .."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}/>
+       
+  
 
             {message && <p>{message}</p>}
 
             {loading ? (
                 <p>Loading contacts...</p>
-            ) : contacts.length === 0 ? (
+            ) : filtercontacts.length === 0 ? (
                 <p>No contacts found.</p>
             ) : (
                 <ul>
-                    {contacts.map((contact) => (
+                    {filtercontacts.map((contact) => (
                         <li key={contact._id}>
                             {contact.name} - {contact.email} - {contact.phone}
                             <button onClick={() => handleEdit(contact)}>Edit</button>
