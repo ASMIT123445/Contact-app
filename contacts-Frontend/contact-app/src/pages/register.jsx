@@ -1,6 +1,25 @@
+import { use, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Register() {
+
+    const [formData, setFormData] = useState({
+        username: "",
+        email: "",
+        password: ""
+    });
+
+    const [message, setMessage] = useState("");
+
+    const showMessage = (msg) =>{
+        setMessage(msg);
+        setTimeout(() => setMessage(""), 3000)
+    };
+
+
+
+
+
     return (
         <>
             <h1>Register user</h1>
