@@ -6,6 +6,7 @@ function Dashboard() {
     const [contacts, setContacts] = useState([]);
     const [message, setMessage] = useState("");
     const [editId, setEditId] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -77,8 +78,10 @@ function Dashboard() {
                     },
                 });
                 setContacts(response.data);
+                setLoading(false);
             } catch (error) {
                 showMessage(error.response?.data?.message || "Failed to load contacts");
+                setLoading(false);
             }
         };
         fetchContacts();
@@ -89,9 +92,8 @@ function Dashboard() {
 
         if (!formData.name || !formData.email || !formData.phone) {
             showMessage("Please enter all the fields");
-        };
-
-        return 
+            return;
+        }
 
         try {
             const token = localStorage.getItem("token");
@@ -137,7 +139,9 @@ function Dashboard() {
 
             {message && <p>{message}</p>}
 
-            {contacts.length === 0 ? (
+            {loading ? (
+                <p>Loading contacts...</p>
+            ) : contacts.length === 0 ? (
                 <p>No contacts found.</p>
             ) : (
                 <ul>
