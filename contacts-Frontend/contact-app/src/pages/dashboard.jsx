@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
+import "./dashboard.css";
 
 function Dashboard() {
     const [contacts, setContacts] = useState([]);
@@ -136,69 +137,88 @@ function Dashboard() {
     })
 
     return (
-        <>
-            <h1>Dashboard pages</h1>
+        <div className="dashboard-container">
 
-            <button onClick={handleLogout}>Logout</button>
-            <br />
+            <div className="dashboard-header">
+                <h1>My Contacts</h1>
+                <button className="logout-btn" onClick={handleLogout}>Logout</button>
+            </div>
 
-         
-            <input 
-            type="text"
-            placeholder="Search names .."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}/>
-       
-  
+            <input
+                type="text"
+                placeholder="Search names..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                style={{ width: "100%", padding: "10px 14px", marginBottom: "20px", borderRadius: "6px", border: "1px solid #ccc", fontSize: "14px" }}
+            />
 
-            {message && <p>{message}</p>}
+            {message && <p className="message">{message}</p>}
 
             {loading ? (
-                <p>Loading contacts...</p>
+                <p className="loading">Loading contacts...</p>
             ) : filtercontacts.length === 0 ? (
-                <p>No contacts found.</p>
+                <p className="no-contacts">No contacts found.</p>
             ) : (
-                <ul>
+                <ul className="contacts-list">
                     {filtercontacts.map((contact) => (
-                        <li key={contact._id}>
-                            {contact.name} - {contact.email} - {contact.phone}
-                            <button onClick={() => handleEdit(contact)}>Edit</button>
-                            <button onClick={() => handleDelete(contact._id)}>Delete</button>
+                        <li key={contact._id} className="contact-item">
+                            <span className="contact-info">
+                                <strong>{contact.name}</strong> — {contact.email} — {contact.phone}
+                            </span>
+                            <div className="contact-actions">
+                                <button className="edit-btn" onClick={() => handleEdit(contact)}>Edit</button>
+                                <button className="delete-btn" onClick={() => handleDelete(contact._id)}>Delete</button>
+                            </div>
                         </li>
                     ))}
                 </ul>
             )}
 
-            <form onSubmit={handleSubmit}>
-                <input
-                    name="name"
-                    type="text"
-                    placeholder="Enter your name"
-                    value={formData.name}
-                    onChange={handleChange}
-                />
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Enter email"
-                    value={formData.email}
-                    onChange={handleChange}
-                />
-                <input
-                    type="tel"
-                    name="phone"
-                    placeholder="Enter phone number"
-                    value={formData.phone}
-                    onChange={handleChange}
-                />
-                <button type="submit">
-                    {editId ? "Update Contact" : "Add Contact"}
-                </button>
-                {editId && (
-                    <button type="button" onClick={handleCancel}>Cancel</button>
-                )}
-            </form>
-        </>
+            <div className="contact-form">
+                <h2>{editId ? "Edit Contact" : "Add Contact"}</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>Name</label>
+                        <input
+                            name="name"
+                            type="text"
+                            placeholder="Enter name"
+                            value={formData.name}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Email</label>
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="Enter email"
+                            value={formData.email}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Phone</label>
+                        <input
+                            type="tel"
+                            name="phone"
+                            placeholder="Enter phone number"
+                            value={formData.phone}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="form-actions">
+                        <button type="submit" className="submit-btn">
+                            {editId ? "Update Contact" : "Add Contact"}
+                        </button>
+                        {editId && (
+                            <button type="button" className="cancel-btn" onClick={handleCancel}>Cancel</button>
+                        )}
+                    </div>
+                </form>
+            </div>
+
+        </div>
     );
 }
 
