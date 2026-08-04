@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 import "./dashboard.css";
@@ -143,6 +144,8 @@ function Dashboard() {
                 <h1>My Contacts</h1>
                 <button className="logout-btn" onClick={handleLogout}>Logout</button>
             </div>
+
+            <Link to={"/addContact"}>Add Contact</Link>
 
             <input
                 type="text"
