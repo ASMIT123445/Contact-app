@@ -31,6 +31,17 @@
         res.status(400);
         throw new Error("All fields are mandatory!");
     }
+
+    const existingContacts = await Contact.findOne({
+        user_id: req.user.id,
+        phone: phone,
+    });
+
+    if (existingContacts) {
+        return res.status(400).json({
+            message: "Phone number already exists."
+        });
+    };
     const contact = await Contact.create({ name, email, phone, user_id: req.user.id,  });
     res.status(201).json(contact);
 });
