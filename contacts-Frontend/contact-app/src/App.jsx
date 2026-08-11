@@ -9,11 +9,13 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 import Navbar from "./components/Navbar";
 
+
+//This is the app function consisting of the main content
 function App() {
   return (
     <>
       <Navbar />
-
+      
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />}></Route>
