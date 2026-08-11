@@ -3,6 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
 import "./dashboard.css";
 
+
+//Function for adding contacts
 function AddContact() {
     const [formData, setFormData] = useState({
         name: "",
@@ -23,7 +25,7 @@ function AddContact() {
             [e.target.name]: e.target.value,
         });
     };
-
+    // Function for submit 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
