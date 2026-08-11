@@ -3,6 +3,7 @@ import { useState } from "react";
 import api from "../services/api";
 import "./login.css";
 
+//Function for login
 function Login() {
     const [formData, setFormData] = useState({
         email: "",
@@ -17,7 +18,7 @@ function Login() {
     };
 
 
-    
+    //Funtion for handle update    
     const handleChange = (e) => {
         setFormData({
             ...formData,
