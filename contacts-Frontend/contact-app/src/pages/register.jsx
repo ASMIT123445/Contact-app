@@ -3,6 +3,7 @@ import api from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import "./register.css";
 
+//Function for register of data
 function Register() {
     const navigate = useNavigate();
 
@@ -26,6 +27,7 @@ function Register() {
         });
     };
 
+    //Function for submit of data
     const handleSubmit = async (e) => {
         e.preventDefault();
 
