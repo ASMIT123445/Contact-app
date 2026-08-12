@@ -3,6 +3,8 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 import api from "../services/api";
 import "./dashboard.css";
 
+
+//Function for edit of contacts
 function EditContact() {
     const { id } = useParams();
     const navigate = useNavigate();
